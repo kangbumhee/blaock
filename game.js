@@ -2,6 +2,11 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const levelElem = document.getElementById('level');
 const linesElem = document.getElementById('lines');
+const startBtn = document.getElementById('start-btn');
+const leftBtn = document.getElementById('left-btn');
+const rightBtn = document.getElementById('right-btn');
+const downBtn = document.getElementById('down-btn');
+const rotateBtn = document.getElementById('rotate-btn');
 
 const COLS = 10;
 const ROWS = 20;
@@ -172,6 +177,21 @@ let interval = null;
 
 let current = null;
 
+function resetGame() {
+  board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+  level = 1;
+  lines = 0;
+  levelElem.textContent = level;
+  linesElem.textContent = lines;
+  current = randomPiece();
+  draw();
+}
+
+function startGame() {
+  resetGame();
+  startLoop();
+}
+
 function randomPiece() {
   const type = Math.floor(Math.random() * SHAPES.length);
   const shape = SHAPES[type];
@@ -280,11 +300,8 @@ function move(dx, dy) {
     current = randomPiece();
     if (collide(current.x, current.y, current.rotation)) {
       alert('Game Over');
-      board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
-      level = 1;
-      lines = 0;
-      levelElem.textContent = level;
-      linesElem.textContent = lines;
+      clearInterval(interval);
+      current = null;
     }
   }
   draw();
@@ -315,6 +332,10 @@ document.addEventListener('keydown', e => {
   }
 });
 
-current = randomPiece();
-startLoop();
+startBtn.addEventListener('click', startGame);
+leftBtn.addEventListener('click', () => move(-1, 0));
+rightBtn.addEventListener('click', () => move(1, 0));
+downBtn.addEventListener('click', () => move(0, 1));
+rotateBtn.addEventListener('click', rotate);
+
 draw();
