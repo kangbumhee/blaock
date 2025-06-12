@@ -1,3 +1,4 @@
+<script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const levelElem = document.getElementById('level');
@@ -12,167 +13,27 @@ const rotateBtn = document.getElementById('rotate-btn');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK = 20;
-
 const COLORS = ['cyan', 'blue', 'orange', 'yellow', 'green', 'purple', 'red'];
 const GOALS = Array.from({ length: 10 }, (_, i) => (i + 1) * 5);
 
-// 7 Tetris shapes with rotation states
 const SHAPES = [
   // I
-  [
-    [
-      [0,0,0,0],
-      [1,1,1,1],
-      [0,0,0,0],
-      [0,0,0,0]
-    ],
-    [
-      [0,0,1,0],
-      [0,0,1,0],
-      [0,0,1,0],
-      [0,0,1,0]
-    ],
-    [
-      [0,0,0,0],
-      [1,1,1,1],
-      [0,0,0,0],
-      [0,0,0,0]
-    ],
-    [
-      [0,0,1,0],
-      [0,0,1,0],
-      [0,0,1,0],
-      [0,0,1,0]
-    ]
-  ],
+  [[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]], [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]], [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]], [[0,0,1,0],[0,0,1,0],[0,0,1,0],[0,0,1,0]]],
   // J
-  [
-    [
-      [1,0,0],
-      [1,1,1],
-      [0,0,0]
-    ],
-    [
-      [0,1,1],
-      [0,1,0],
-      [0,1,0]
-    ],
-    [
-      [0,0,0],
-      [1,1,1],
-      [0,0,1]
-    ],
-    [
-      [0,1,0],
-      [0,1,0],
-      [1,1,0]
-    ]
-  ],
+  [[[1,0,0],[1,1,1],[0,0,0]], [[0,1,1],[0,1,0],[0,1,0]], [[0,0,0],[1,1,1],[0,0,1]], [[0,1,0],[0,1,0],[1,1,0]]],
   // L
-  [
-    [
-      [0,0,1],
-      [1,1,1],
-      [0,0,0]
-    ],
-    [
-      [0,1,0],
-      [0,1,0],
-      [0,1,1]
-    ],
-    [
-      [0,0,0],
-      [1,1,1],
-      [1,0,0]
-    ],
-    [
-      [1,1,0],
-      [0,1,0],
-      [0,1,0]
-    ]
-  ],
+  [[[0,0,1],[1,1,1],[0,0,0]], [[0,1,0],[0,1,0],[0,1,1]], [[0,0,0],[1,1,1],[1,0,0]], [[1,1,0],[0,1,0],[0,1,0]]],
   // O
-  [
-    [
-      [0,1,1,0],
-      [0,1,1,0],
-      [0,0,0,0],
-      [0,0,0,0]
-    ]
-  ],
+  [[[0,1,1,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]]],
   // S
-  [
-    [
-      [0,1,1],
-      [1,1,0],
-      [0,0,0]
-    ],
-    [
-      [0,1,0],
-      [0,1,1],
-      [0,0,1]
-    ],
-    [
-      [0,0,0],
-      [0,1,1],
-      [1,1,0]
-    ],
-    [
-      [1,0,0],
-      [1,1,0],
-      [0,1,0]
-    ]
-  ],
+  [[[0,1,1],[1,1,0],[0,0,0]], [[0,1,0],[0,1,1],[0,0,1]], [[0,0,0],[0,1,1],[1,1,0]], [[1,0,0],[1,1,0],[0,1,0]]],
   // T
-  [
-    [
-      [0,1,0],
-      [1,1,1],
-      [0,0,0]
-    ],
-    [
-      [0,1,0],
-      [0,1,1],
-      [0,1,0]
-    ],
-    [
-      [0,0,0],
-      [1,1,1],
-      [0,1,0]
-    ],
-    [
-      [0,1,0],
-      [1,1,0],
-      [0,1,0]
-    ]
-  ],
+  [[[0,1,0],[1,1,1],[0,0,0]], [[0,1,0],[0,1,1],[0,1,0]], [[0,0,0],[1,1,1],[0,1,0]], [[0,1,0],[1,1,0],[0,1,0]]],
   // Z
-  [
-    [
-      [1,1,0],
-      [0,1,1],
-      [0,0,0]
-    ],
-    [
-      [0,0,1],
-      [0,1,1],
-      [0,1,0]
-    ],
-    [
-      [0,0,0],
-      [1,1,0],
-      [0,1,1]
-    ],
-    [
-      [0,1,0],
-      [1,1,0],
-      [1,0,0]
-    ]
-  ]
+  [[[1,1,0],[0,1,1],[0,0,0]], [[0,0,1],[0,1,1],[0,1,0]], [[0,0,0],[1,1,0],[0,1,1]], [[0,1,0],[1,1,0],[1,0,0]]]
 ];
 
 let board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
-
 let level = 1;
 let linesInLevel = 0;
 let totalLines = 0;
@@ -180,7 +41,6 @@ let interval = null;
 let muted = false;
 let bgmCtx = null;
 let bgmOsc = null;
-
 let current = null;
 
 function updateDisplay() {
@@ -217,11 +77,7 @@ function randomPiece() {
 }
 
 function drawBlock(x, y, colorIndex) {
-  if (colorIndex === -1) {
-    ctx.fillStyle = '#fff';
-  } else {
-    ctx.fillStyle = COLORS[colorIndex];
-  }
+  ctx.fillStyle = colorIndex === -1 ? '#fff' : COLORS[colorIndex];
   ctx.fillRect(x * BLOCK, y * BLOCK, BLOCK - 1, BLOCK - 1);
 }
 
@@ -254,12 +110,8 @@ function collide(newX, newY, newRotation) {
       if (shape[y][x]) {
         const px = newX + x;
         const py = newY + y;
-        if (px < 0 || px >= COLS || py >= ROWS) {
-          return true;
-        }
-        if (py >= 0 && board[py][px]) {
-          return true;
-        }
+        if (px < 0 || px >= COLS || py >= ROWS) return true;
+        if (py >= 0 && board[py][px]) return true;
       }
     }
   }
@@ -324,9 +176,7 @@ function clearLines() {
 function startLoop() {
   if (interval) clearInterval(interval);
   const speed = Math.max(100, 1000 - (level - 1) * 80);
-  interval = setInterval(() => {
-    move(0, 1);
-  }, speed);
+  interval = setInterval(() => move(0, 1), speed);
 }
 
 function move(dx, dy) {
@@ -356,55 +206,42 @@ function rotate() {
   }
 }
 
+// 키보드 조작
 document.addEventListener('keydown', e => {
   switch (e.key) {
-    case 'ArrowLeft':
-      move(-1, 0);
-      break;
-    case 'ArrowRight':
-      move(1, 0);
-      break;
-    case 'ArrowDown':
-      move(0, 1);
-      break;
-    case 'ArrowUp':
-      rotate();
-      break;
+    case 'ArrowLeft': move(-1, 0); break;
+    case 'ArrowRight': move(1, 0); break;
+    case 'ArrowDown': move(0, 1); break;
+    case 'ArrowUp': rotate(); break;
   }
 });
 
+// 버튼 조작
 startBtn.addEventListener('click', startGame);
 leftBtn.addEventListener('click', () => move(-1, 0));
 rightBtn.addEventListener('click', () => move(1, 0));
 downBtn.addEventListener('click', () => move(0, 1));
 rotateBtn.addEventListener('click', rotate);
 
-// touch controls for mobile
+// 터치 조작
 document.getElementById('touch-left')?.addEventListener('touchstart', e => {
-  e.preventDefault();
-  move(-1, 0);
+  e.preventDefault(); move(-1, 0);
 });
 document.getElementById('touch-right')?.addEventListener('touchstart', e => {
-  e.preventDefault();
-  move(1, 0);
+  e.preventDefault(); move(1, 0);
 });
 document.getElementById('touch-down')?.addEventListener('touchstart', e => {
-  e.preventDefault();
-  move(0, 1);
+  e.preventDefault(); move(0, 1);
 });
 canvas.addEventListener('touchstart', e => {
-  e.preventDefault();
-  rotate();
+  e.preventDefault(); rotate();
 });
 
+// 사운드 토글
 soundToggle.addEventListener('click', () => {
   muted = !muted;
   soundToggle.textContent = muted ? '🔇' : '🔊';
-  if (muted) {
-    stopBgm();
-  } else {
-    startBgm();
-  }
+  if (muted) stopBgm(); else startBgm();
 });
 
 function playEffect() {
@@ -443,4 +280,8 @@ function stopBgm() {
   bgmCtx = null;
 }
 
+// 초기 실행
+current = randomPiece();
+startLoop();
 draw();
+</script>
