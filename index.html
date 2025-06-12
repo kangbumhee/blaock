@@ -4,17 +4,95 @@
   <meta charset="utf-8">
   <title>Block Game</title>
   <style>
-    body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #333; color: white; font-family: Arial, sans-serif; }
-    canvas { background: #000; border: 1px solid #555; }
-    #info { margin-left: 20px; }
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #222;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    #container {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    #play-area {
+      position: relative;
+    }
+    .touch {
+      position: absolute;
+      z-index: 2;
+      background: rgba(255,255,255,0);
+    }
+    #touch-left { left: 0; top: 0; bottom: 20%; right: 50%; }
+    #touch-right { right: 0; top: 0; bottom: 20%; left: 50%; }
+    #touch-down { left: 0; right: 0; bottom: 0; height: 20%; }
+    @media (min-width: 600px) {
+      .touch { display: none; }
+    }
+    canvas {
+      background: #000;
+      border: 2px solid #555;
+    }
+    #info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    #controls {
+      display: grid;
+      grid-template-columns: repeat(3, 40px);
+      grid-template-rows: repeat(2, 40px);
+      gap: 5px;
+    }
+    #controls span {
+      width: 40px;
+      height: 40px;
+    }
+    #controls button,
+    #start-btn {
+      background: #444;
+      color: #fff;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+    #start-btn {
+      padding: 5px 10px;
+      background: #28a745;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
   </style>
 </head>
 <body>
-  <canvas id="game" width="200" height="400"></canvas>
-  <div id="info">
-    <div>Level: <span id="level">1</span></div>
-    <div>Lines cleared: <span id="lines">0</span></div>
+  <div id="container">
+    <div id="play-area">
+      <canvas id="game" width="200" height="400"></canvas>
+      <div id="touch-left" class="touch"></div>
+      <div id="touch-right" class="touch"></div>
+      <div id="touch-down" class="touch"></div>
+    </div>
+    <div id="info">
+      <div>Level: <span id="level">1</span></div>
+      <div>Lines: <span id="lines">0/5</span></div>
+      <button id="sound-toggle">🔊</button>
+      <button id="start-btn">Start</button>
+      <div id="controls">
+        <button id="left-btn">&#9664;</button>
+        <button id="rotate-btn">&#8635;</button>
+        <button id="right-btn">&#9654;</button>
+        <span></span>
+        <button id="down-btn">&#9660;</button>
+        <span></span>
+      </div>
+    </div>
   </div>
-<script src="game.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
